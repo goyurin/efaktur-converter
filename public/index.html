@@ -2,71 +2,77 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Excel to XML Converter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>e-Faktur Excel to XML Converter</title>
   <style>
-    body { font-family: sans-serif; display: flex; justify-content: center; padding-top: 50px; background: #f9f9f9; }
-    .card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; width: 350px; }
-    input[type="file"] { margin: 1rem 0; }
-    button { background: #0070f3; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
-    button:disabled { background: #ccc; }
-    #status { margin-top: 1rem; font-size: 0.9rem; color: #555; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #f9fafb;
+      color: #111827;
+    }
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .btn-download {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 10px 16px;
+      background-color: #f3f4f6;
+      color: #374151;
+      text-decoration: none;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .btn-download:hover {
+      background-color: #e5e7eb;
+    }
+    .btn-submit {
+      padding: 10px 20px;
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .btn-submit:hover {
+      background-color: #1d4ed8;
+    }
+    .file-input {
+      margin-bottom: 20px;
+      display: block;
+    }
   </style>
 </head>
 <body>
 
   <div class="card">
-    <h2>Excel to XML</h2>
-    <input type="file" id="excelFile" accept=".xlsx, .xls" />
-    <br>
-    <button onclick="uploadAndConvert()" id="convertBtn">Convert & Download</button>
-    <div id="status"></div>
+    <h2>e-Faktur Excel to XML Converter</h2>
+    <p>Upload your filled Excel file to generate the DJP-compliant XML file.</p>
+    
+    <!-- Template Download Button -->
+    <div>
+      <a href="/Template_eFaktur.xlsx" download="Template_eFaktur.xlsx" class="btn-download">
+        📥 Download Excel Template
+      </a>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 20px 0;">
+
+    <!-- Form for Conversion -->
+    <form action="/api/convert" method="post" enctype="multipart/form-data">
+      <input type="file" name="file" accept=".xlsx, .xls" required class="file-input">
+      <button type="submit" class="btn-submit">Convert & Download XML</button>
+    </form>
   </div>
 
-  <script>
-    async function uploadAndConvert() {
-      const fileInput = document.getElementById('excelFile');
-      const status = document.getElementById('status');
-      const btn = document.getElementById('convertBtn');
-
-      if (!fileInput.files.length) {
-        alert("Please select an Excel file first!");
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append("file", fileInput.files[0]);
-
-      status.innerText = "Converting...";
-      btn.disabled = true;
-
-      try {
-        const response = await fetch('http://127.0.0.1:8000/api/convert', {
-  method: 'POST',
-  body: formData
-});
-
-        if (!response.ok) {
-          const err = await response.json();
-          throw new Error(err.detail || "Failed to convert file.");
-        }
-
-        // Trigger file download in browser
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = fileInput.files[0].name.replace(/\.[^/.]+$/, "") + ".xml";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-
-        status.innerText = "Success! Download started.";
-      } catch (err) {
-        status.innerText = "Error: " + err.message;
-      } finally {
-        btn.disabled = false;
-      }
-    }
-  </script>
 </body>
 </html>
