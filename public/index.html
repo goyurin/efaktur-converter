@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Excel to XML Converter</title>
+  <style>
+    body { font-family: sans-serif; display: flex; justify-content: center; padding-top: 50px; background: #f9f9f9; }
+    .card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; width: 350px; }
+    input[type="file"] { margin: 1rem 0; }
+    button { background: #0070f3; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+    button:disabled { background: #ccc; }
+    #status { margin-top: 1rem; font-size: 0.9rem; color: #555; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>Excel to XML</h2>
+    <input type="file" id="excelFile" accept=".xlsx, .xls" />
+    <br>
+    <button onclick="uploadAndConvert()" id="convertBtn">Convert & Download</button>
+    <div id="status"></div>
+  </div>
+
+  <script>
+    async function uploadAndConvert() {
+      const fileInput = document.getElementById('excelFile');
+      const status = document.getElementById('status');
+      const btn = document.getElementById('convertBtn');
+
+      if (!fileInput.files.length) {
+        alert("Please select an Excel file first!");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", fileInput.files[0]);
+
+      status.innerText = "Converting...";
+      btn.disabled = true;
+
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/convert', {
+  method: 'POST',
+  body: formData
+});
+
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.detail || "Failed to convert file.");
+        }
+
+        // Trigger file download in browser
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileInput.files[0].name.replace(/\.[^/.]+$/, "") + ".xml";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+
+        status.innerText = "Success! Download started.";
+      } catch (err) {
+        status.innerText = "Error: " + err.message;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
