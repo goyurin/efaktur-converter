@@ -6,71 +6,86 @@
   <title>e-Faktur Excel to XML Converter</title>
   <style>
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      max-width: 600px;
-      margin: 50px auto;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      max-width: 500px;
+      margin: 60px auto;
       padding: 20px;
-      background-color: #f9fafb;
-      color: #111827;
+      background-color: #f3f4f6;
     }
     .card {
-      background: white;
+      background: #ffffff;
       padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      text-align: center;
     }
-    .btn-download {
+    h2 {
+      margin-top: 0;
+      color: #1f2937;
+    }
+    p {
+      color: #6b7280;
+      font-size: 14px;
+    }
+    .btn-template {
       display: inline-block;
-      margin-bottom: 20px;
-      padding: 10px 16px;
-      background-color: #f3f4f6;
+      width: 100%;
+      box-sizing: border-box;
+      margin: 15px 0 25px 0;
+      padding: 12px;
+      background-color: #f9fafb;
       color: #374151;
       text-decoration: none;
       border: 1px solid #d1d5db;
-      border-radius: 6px;
+      border-radius: 8px;
+      font-weight: 600;
       font-size: 14px;
-      font-weight: 500;
     }
-    .btn-download:hover {
-      background-color: #e5e7eb;
+    .btn-template:hover {
+      background-color: #f3f4f6;
+    }
+    .file-input {
+      display: block;
+      width: 100%;
+      margin-bottom: 20px;
     }
     .btn-submit {
-      padding: 10px 20px;
+      width: 100%;
+      padding: 12px;
       background-color: #2563eb;
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
+      font-weight: 600;
       cursor: pointer;
-      font-weight: 500;
     }
     .btn-submit:hover {
       background-color: #1d4ed8;
     }
-    .file-input {
-      margin-bottom: 20px;
-      display: block;
+    hr {
+      border: 0;
+      border-top: 1px solid #e5e7eb;
+      margin: 20px 0;
     }
   </style>
 </head>
 <body>
 
   <div class="card">
-    <h2>e-Faktur Excel to XML Converter</h2>
-    <p>Upload your filled Excel file to generate the DJP-compliant XML file.</p>
+    <h2>e-Faktur Converter</h2>
+    <p>Convert custom Excel invoices into DJP e-Faktur XML format.</p>
     
-    <!-- Template Download Button -->
-    <div>
-      <a href="/template.xlsx" download="template.xlsx" class="btn-download">
-        📥 Download Excel Template
-      </a>
-    </div>
+    <!-- Excel Template Download Button -->
+    <a href="/template.xlsx" download="template.xlsx" class="btn-template">
+      📥 Download Excel Template (.xlsx)
+    </a>
 
-    <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 20px 0;">
+    <hr>
 
-    <!-- Form for Conversion -->
+    <!-- Convert Form -->
     <form action="/api/convert" method="post" enctype="multipart/form-data">
       <input type="file" name="file" accept=".xlsx, .xls" required class="file-input">
-      <button type="submit" class="btn-submit">Convert & Download XML</button>
+      <button type="submit" class="btn-submit">Convert to XML</button>
     </form>
   </div>
 
